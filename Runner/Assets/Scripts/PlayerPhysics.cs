@@ -157,7 +157,14 @@ public class PlayerPhysics : MonoBehaviour {
 
 	public void UpdateCamera()
 	{
-		Vector3 cameraPosition = new Vector3 (_runSpeed * 6 + 2, _a.y * 3, -10);
+		Vector3 toPosition = new Vector3 (_runSpeed * 6 + 2, _a.y * 3, -10);
+		Vector3 cameraPosition = MoveTowards (PlayerCamera.transform.localPosition, toPosition, 0.1f);
 		PlayerCamera.transform.localPosition = cameraPosition;
+	}
+
+	private Vector3 MoveTowards(Vector3 from, Vector3 to, float speed)
+	{
+		Vector3 result = Vector3.Lerp (from, to, speed);
+		return result;
 	}
 }
