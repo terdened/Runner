@@ -94,6 +94,33 @@ public class PlayerPhysics : MonoBehaviour {
 			}
 		}
 
+		for (int i = 0; i < _verticalRasycastCount; i++)
+		{
+			var rayStartPosition = new Vector2(0,0);
+			rayStartPosition.x = transform.position.x - _size.x/2 + i * MinRaycastDistance;
+			rayStartPosition.y = transform.position.y - _size.y/2;
+			
+			var raycast = Physics2D.Raycast(rayStartPosition, 
+			                                new Vector2(0,verticalDirection), 
+			                                10f, 
+			                                LayerMask.GetMask("Floor"));
+			
+			var debugLineStart = new Vector3(rayStartPosition.x, rayStartPosition.y, 0);
+			Debug.DrawRay(debugLineStart, new Vector3(0, verticalDirection, 0), Color.green);
+			
+			if(raycast.collider != null)
+			{
+				float distance = raycast.point.y - (rayStartPosition.y + (_a.y * verticalDirection));
+				if (raycast.point.y > (rayStartPosition.y + _a.y) - Skin)
+				{
+					transform.position = new Vector3(transform.position.x, raycast.point.y + _size.y/2,transform.position.z);
+					//transform.position.y = raycast.point.y + Skin + _size.y/2;
+					OnGround = true;
+					break;
+				}
+			}
+		}
+
 		return resultMovement;
 	}
 	
