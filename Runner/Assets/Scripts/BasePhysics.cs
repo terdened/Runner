@@ -12,7 +12,7 @@ public class BasePhysics : MonoBehaviour {
 
     #region private params
     private float Skin = 0.001f;
-    private float MinRaycastDistance = 0.3f;
+    private float MinRaycastDistance = 0.33f;
     private Vector2 _a = new Vector2(0, 0);
     private Vector2 _size;
     private int _horizontalRasycastCount;
@@ -43,72 +43,123 @@ public class BasePhysics : MonoBehaviour {
 
     private Vector2 UpdateRaycasts(Vector2 resultMovement)
     {
+        var nextA = _a + resultMovement;
+
         OnGround = false;
-        int verticalDirection = 1;
-        int horizontalDirection = 1;
 
-        if (_a.y < 0)
-        {
-            verticalDirection = -1;
-        }
-
-        if (_a.x < 0)
-        {
-            horizontalDirection = -1;
-        }
-
+        if(nextA.y < 0)
         for (int i = 0; i < _verticalRasycastCount; i++)
         {
             var rayStartPosition = new Vector2(0, 0);
-            rayStartPosition.x = transform.position.x - _size.x / 2 + i * MinRaycastDistance + Skin;
+            rayStartPosition.x = transform.position.x - _size.x / 2 + i * MinRaycastDistance;
             rayStartPosition.y = transform.position.y - _size.y / 2;
 
             var raycast = Physics2D.Raycast(rayStartPosition,
-                                            new Vector2(0, verticalDirection),
+                                            new Vector2(0, -1),
                                             10f,
                                             LayerMask.GetMask("Floor"));
 
             var debugLineStart = new Vector3(rayStartPosition.x, rayStartPosition.y, 0);
-            Debug.DrawRay(debugLineStart, new Vector3(0, verticalDirection, 0), Color.green);
+            Debug.DrawLine(debugLineStart, debugLineStart + new Vector3(0, -1, 0), Color.green);
+
 
             if (raycast.collider != null)
             {
-                float distance = raycast.point.y - (rayStartPosition.y + (_a.y * verticalDirection));
-                if (raycast.point.y > (rayStartPosition.y + _a.y) - Skin)
+                float distance = raycast.point.y - (rayStartPosition.y - nextA.y);
+                if (raycast.point.y > (rayStartPosition.y + nextA.y))
                 {
-                    transform.position = new Vector3(transform.position.x, raycast.point.y + _size.y / 2, transform.position.z);
-
+                    //transform.position = new Vector3(transform.position.x, raycast.point.y + _size.y / 2, transform.position.z);
                     _a.y = 0;
                     resultMovement.y = 0;
-
-                    if (verticalDirection < 0)
-                        OnGround = true;
+                    OnGround = true;
 
                     break;
                 }
             }
         }
 
-        for (int i = 0; i < _horizontalRasycastCount; i++)
+        if(nextA.y > 0)
+        for (int i = 0; i < _verticalRasycastCount; i++)
         {
             var rayStartPosition = new Vector2(0, 0);
-            rayStartPosition.x = transform.position.x - _size.x / 2;
-            rayStartPosition.y = transform.position.y - _size.y / 2 + i * MinRaycastDistance + Skin;
+            rayStartPosition.x = transform.position.x - _size.x / 2 + i * MinRaycastDistance;
+            rayStartPosition.y = transform.position.y + _size.y / 2;
 
             var raycast = Physics2D.Raycast(rayStartPosition,
-                                            new Vector2(horizontalDirection, 0),
+                                            new Vector2(0, 1),
                                             10f,
                                             LayerMask.GetMask("Floor"));
 
             var debugLineStart = new Vector3(rayStartPosition.x, rayStartPosition.y, 0);
-            Debug.DrawRay(debugLineStart, new Vector3(horizontalDirection, 0, 0), Color.blue);
+            Debug.DrawLine(debugLineStart, debugLineStart + new Vector3(0, 1, 0), Color.green);
+            
 
             if (raycast.collider != null)
             {
-                float distance = raycast.point.x - (rayStartPosition.x + (_a.x * horizontalDirection));
-                if (raycast.point.x > (rayStartPosition.x + _a.x) - Skin)
+                float distance = raycast.point.y - (rayStartPosition.y + (nextA.y * 1));
+                if (raycast.point.y > (rayStartPosition.y + nextA.y))
                 {
-                    transform.position = new Vector3(raycast.point.x + _size.x / 2, transform.position.y, transform.position.z);
+                    //transform.position = new Vector3(transform.position.x, raycast.point.y + _size.y / 2, transform.position.z);
+
+                    _a.y = 0;
+                    resultMovement.y = 0;
+
+                    break;
+                }
+            }
+        }
+
+        if (nextA.x > 0)
+        for (int i = 0; i < _horizontalRasycastCount; i++)
+        {
+            var rayStartPosition = new Vector2(0, 0);
+            rayStartPosition.x = transform.position.x + _size.x / 2 ;
+            rayStartPosition.y = transform.position.y - _size.y / 2 + i * MinRaycastDistance + 0.001f;
+
+            var raycast = Physics2D.Raycast(rayStartPosition,
+                                            new Vector2(1, 0),
+                                            10f,
+                                            LayerMask.GetMask("Floor"));
+
+            var debugLineStart = new Vector3(rayStartPosition.x, rayStartPosition.y, 0);
+            Debug.DrawLine(debugLineStart, debugLineStart + new Vector3(1, 0, 0), Color.blue);
+
+            if (raycast.collider != null)
+            {
+                float distance = raycast.point.x - (rayStartPosition.x + nextA.x );
+                if (raycast.point.x > rayStartPosition.x + nextA.x)
+                {
+                    //transform.position = new Vector3(raycast.point.x + _size.x / 2, transform.position.y, transform.position.z);
+
+                    _a.x = 0;
+                    resultMovement.x = 0;
+
+                    break;
+                }
+            }
+        }
+
+        if (nextA.x < 0)
+        for (int i = 0; i < _horizontalRasycastCount; i++)
+        {
+            var rayStartPosition = new Vector2(0, 0);
+            rayStartPosition.x = transform.position.x - _size.x / 2;
+            rayStartPosition.y = transform.position.y - _size.y / 2 + i * MinRaycastDistance + 0.001f;
+
+            var raycast = Physics2D.Raycast(rayStartPosition,
+                                            new Vector2(-1, 0),
+                                            10f,
+                                            LayerMask.GetMask("Floor"));
+
+            var debugLineStart = new Vector3(rayStartPosition.x, rayStartPosition.y, 0);
+            Debug.DrawLine(debugLineStart, debugLineStart + new Vector3(-1, 0, 0), Color.blue);
+
+            if (raycast.collider != null)
+            {
+                float distance = raycast.point.x - (rayStartPosition.x - nextA.x);
+                if (raycast.point.x > rayStartPosition.x + nextA.x)
+                {
+                    //transform.position = new Vector3(raycast.point.x + _size.x / 2, transform.position.y, transform.position.z);
 
                     _a.x = 0;
                     resultMovement.x = 0;
