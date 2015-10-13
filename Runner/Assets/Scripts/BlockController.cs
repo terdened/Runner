@@ -15,8 +15,16 @@ public class BlockController : MonoBehaviour {
 
         BasePhysics.AddForce(new Vector2(Input.GetAxisRaw("Horizontal") * 0.001f, 0));
 
-        if(Input.GetButtonDown("Jump"))
-            BasePhysics.AddForce(Vector2.up*0.1f);
+        BasePhysics.SetVelocity(Vector2.zero);
+
+        if (Input.GetKey(KeyCode.LeftArrow))
+            BasePhysics.SetVelocity(Vector2.left * 0.1f);
+
+        if (Input.GetKey(KeyCode.RightArrow))
+            BasePhysics.SetVelocity(Vector2.right * 0.1f);
+
+        if (Input.GetButtonDown("Jump"))
+            BasePhysics.AddForce(Vector2.up*0.15f);
 
     }
 }

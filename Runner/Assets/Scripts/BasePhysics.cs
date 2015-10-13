@@ -4,16 +4,20 @@ using System.Collections;
 public class BasePhysics : MonoBehaviour {
 
     #region public params
-    public float G = 0.1f;
+    public float G = 0.15f;
     public Vector2 GravityDirection = Vector2.down;
     public bool OnGround = false;
-    public float FadePower = 0.0001f;
+    public float AirResistance = 0.0001f;
+    public float FloorResistance = 0.001f;
     #endregion
 
     #region private params
-    private float Skin = 0.001f;
+    //private float Skin = 0.001f;
     private float MinRaycastDistance = 0.33f;
-    private Vector2 _a = new Vector2(0, 0);
+    private Vector2 _momentum = new Vector2(0, 0);
+    private Vector2 _velocity = new Vector2(0, 0);
+    private float _aVelocity = 0.001f;
+    private Vector2 _resistance;
     private Vector2 _size;
     private int _horizontalRasycastCount;
     private int _verticalRasycastCount;
@@ -33,21 +37,26 @@ public class BasePhysics : MonoBehaviour {
         Vector2 aIncrease = new Vector2(0, 0);
 
         aIncrease = HandleGravity(aIncrease);
+        aIncrease = HandleVelocity(aIncrease);
+        
         aIncrease = UpdateRaycasts(aIncrease);
 
-        _a.x += aIncrease.x;
-        _a.y += aIncrease.y;
+        _momentum.x += aIncrease.x;
+        _momentum.y += aIncrease.y;
 
-        transform.Translate(_a.x, _a.y, 0);
+        HandleFade();
+
+        transform.Translate(_momentum.x, _momentum.y, 0);
     }
 
     private Vector2 UpdateRaycasts(Vector2 resultMovement)
     {
-        var nextA = _a + resultMovement;
+        var nextA = _momentum + resultMovement;
 
         OnGround = false;
+        _resistance = new Vector2(AirResistance, AirResistance);
 
-        if(nextA.y < 0)
+        if (nextA.y < 0)
         for (int i = 0; i < _verticalRasycastCount; i++)
         {
             var rayStartPosition = new Vector2(0, 0);
@@ -69,9 +78,10 @@ public class BasePhysics : MonoBehaviour {
                 if (raycast.point.y > (rayStartPosition.y + nextA.y))
                 {
                     //transform.position = new Vector3(transform.position.x, raycast.point.y + _size.y / 2, transform.position.z);
-                    _a.y = 0;
+                    _momentum.y = 0;
                     resultMovement.y = 0;
                     OnGround = true;
+                    _resistance.x = FloorResistance;
 
                     break;
                 }
@@ -97,11 +107,11 @@ public class BasePhysics : MonoBehaviour {
             if (raycast.collider != null)
             {
                 float distance = raycast.point.y - (rayStartPosition.y + (nextA.y * 1));
-                if (raycast.point.y > (rayStartPosition.y + nextA.y))
+                if (raycast.point.y < (rayStartPosition.y + nextA.y))
                 {
                     //transform.position = new Vector3(transform.position.x, raycast.point.y + _size.y / 2, transform.position.z);
 
-                    _a.y = 0;
+                    _momentum.y = 0;
                     resultMovement.y = 0;
 
                     break;
@@ -127,11 +137,11 @@ public class BasePhysics : MonoBehaviour {
             if (raycast.collider != null)
             {
                 float distance = raycast.point.x - (rayStartPosition.x + nextA.x );
-                if (raycast.point.x > rayStartPosition.x + nextA.x)
+                if (raycast.point.x < rayStartPosition.x + nextA.x)
                 {
                     //transform.position = new Vector3(raycast.point.x + _size.x / 2, transform.position.y, transform.position.z);
 
-                    _a.x = 0;
+                    _momentum.x = 0;
                     resultMovement.x = 0;
 
                     break;
@@ -161,7 +171,7 @@ public class BasePhysics : MonoBehaviour {
                 {
                     //transform.position = new Vector3(raycast.point.x + _size.x / 2, transform.position.y, transform.position.z);
 
-                    _a.x = 0;
+                    _momentum.x = 0;
                     resultMovement.x = 0;
 
                     break;
@@ -174,17 +184,79 @@ public class BasePhysics : MonoBehaviour {
 
     private Vector2 HandleGravity(Vector2 resultMovement)
     {
-        if (!OnGround)
+        resultMovement.x += G * GravityDirection.x * Time.deltaTime;
+        resultMovement.y += G * GravityDirection.y * Time.deltaTime;
+
+        return resultMovement;
+    }
+
+    private Vector2 HandleVelocity(Vector2 resultMovement)
+    {
+        if(_velocity.x > 0)
         {
-            resultMovement.x += G * GravityDirection.x * Time.deltaTime;
-            resultMovement.y += G * GravityDirection.y * Time.deltaTime;
+            if (_momentum.x < _velocity.x)
+                resultMovement.x += _aVelocity;
+        }
+
+        if (_velocity.x < 0)
+        {
+            if (_momentum.x > _velocity.x)
+                resultMovement.x -= _aVelocity;
+        }
+
+        if (_velocity.y > 0)
+        {
+            if (_momentum.y < _velocity.y)
+                resultMovement.y += _aVelocity;
+        }
+
+        if (_velocity.y < 0)
+        {
+            if (_momentum.y > _velocity.y)
+                resultMovement.y -= _aVelocity;
         }
 
         return resultMovement;
     }
 
+    private void HandleFade()
+    {
+        if (_momentum.x > 0)
+        {
+            _momentum.x -= _resistance.x;
+            if (_momentum.x < 0)
+                _momentum.x = 0;
+        }
+
+        if (_momentum.x < 0)
+        {
+            _momentum.x += _resistance.x;
+            if (_momentum.x > 0)
+                _momentum.x = 0;
+        }
+
+        if (_momentum.y > 0)
+        {
+            _momentum.y -= _resistance.y;
+            if (_momentum.y < 0)
+                _momentum.y = 0;
+        }
+
+        if (_momentum.y < 0)
+        {
+            _momentum.y += _resistance.y;
+            if (_momentum.y > 0)
+                _momentum.y = 0;
+        }
+    }
+
     public void AddForce(Vector2 direction)
     {
-        _a += direction;
+        _momentum += direction;
+    }
+
+    public void SetVelocity(Vector2 velocity)
+    {
+        _velocity = velocity;
     }
 }
