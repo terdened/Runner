@@ -16,6 +16,7 @@ public class BasePhysics : MonoBehaviour {
     private float MinRaycastDistance = 0.33f;
     private Vector2 _momentum = new Vector2(0, 0);
     private Vector2 _velocity = new Vector2(0, 0);
+    private float _stairHeight = 0.2f;
     private float _aVelocity = 0.001f;
     private Vector2 _resistance;
     private Vector2 _size;
@@ -141,10 +142,39 @@ public class BasePhysics : MonoBehaviour {
                 {
                     //transform.position = new Vector3(raycast.point.x + _size.x / 2, transform.position.y, transform.position.z);
 
-                    _momentum.x = 0;
-                    resultMovement.x = 0;
+                    if (i == 0)
+                    {
+                        var stairRayStartPosition = new Vector2(0, 0);
+                        stairRayStartPosition.x = transform.position.x + _size.x / 2;
+                        stairRayStartPosition.y = transform.position.y - _size.y / 2 + _stairHeight;
 
-                    break;
+                        var stairRaycast = Physics2D.Raycast(stairRayStartPosition,
+                                                new Vector2(0, -1),
+                                                10f,
+                                                LayerMask.GetMask("Floor"));
+
+                        var debugLineStartStair = new Vector3(stairRayStartPosition.x, stairRayStartPosition.y, 0);
+                        Debug.DrawLine(debugLineStartStair, debugLineStartStair + new Vector3(1, 0, 0), Color.yellow);
+
+                        if (stairRaycast.collider != null)
+                        {
+                            float stairDistance = stairRaycast.point.x - (stairRayStartPosition.x + nextA.x);
+
+                            if (stairRaycast.point.x < stairRayStartPosition.x + nextA.x)
+                            {
+                                var currentPosition = transform.position;
+                                currentPosition.y = currentPosition.y + _stairHeight;
+                                transform.Translate(0, _stairHeight,0);
+                                break;
+                            }
+                                    
+                        }
+
+                        _momentum.x = 0;
+                        resultMovement.x = 0;
+
+                        break;
+                    }
                 }
             }
         }
@@ -258,5 +288,10 @@ public class BasePhysics : MonoBehaviour {
     public void SetVelocity(Vector2 velocity)
     {
         _velocity = velocity;
+    }
+
+    public Vector2 GetMomentum()
+    {
+        return _momentum;
     }
 }
