@@ -50,6 +50,7 @@
      <Compile Include="Assets\Scripts\ArcadePhysycs\PlayerPhysycs_Arcade.cs" />
      <Compile Include="Assets\Scripts\Camera.cs" />
      <Compile Include="Assets\Scripts\Camera_Perspective.cs" />
+     <Compile Include="Assets\Scripts\Effects\Splash.cs" />
      <Compile Include="Assets\Scripts\FloorDetector.cs" />
      <Compile Include="Assets\Scripts\PersonsControllers\BlockController.cs" />
      <Compile Include="Assets\Scripts\PersonsControllers\PlayerController.cs" />

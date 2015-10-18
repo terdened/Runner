@@ -4,8 +4,7 @@ using System.Collections;
 public class SimpleBulet : BaseBulet 
 {
     private Vector3 _direction;
-    private int _collisionCount = 0;
-
+    
     protected void Start()
     {
         base.Start();
@@ -18,14 +17,10 @@ public class SimpleBulet : BaseBulet
         transform.Translate(_direction);
     }
 
-    void OnTriggerEnter2D(Collider2D other)
+    override protected void OnCollide(Collider2D other)
     {
-        Debug.Log("Here");
-        _collisionCount++;
+        var splashEffect = Instantiate(Splash, transform.position, Quaternion.identity);
 
-        if (_collisionCount > 1)
-        {
-            DestroyObject(gameObject);
-        }
+        DestroyObject(gameObject);       
     }
 }
