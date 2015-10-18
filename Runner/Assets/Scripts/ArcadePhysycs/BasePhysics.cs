@@ -60,7 +60,7 @@ public class BasePhysics : MonoBehaviour {
         #region down
         if (nextA.y < 0)
         {
-            for (int i = 0; i < _verticalRasycastCount; i++)
+            for (int i = _verticalRasycastCount - 1; i >= 0; i--)
             {
                 var rayStartPosition = new Vector2(0, 0);
                 rayStartPosition.x = transform.position.x - _size.x / 2 + i * MinRaycastDistance;
@@ -204,20 +204,14 @@ public class BasePhysics : MonoBehaviour {
 
                             var stairRaycast = Physics2D.Raycast(stairRayStartPosition,
                                                     new Vector2(0, -1),
-                                                    10f,
+                                                    nextA.x,
                                                     LayerMask.GetMask("Floor"));
 
                             var debugLineStartStair = new Vector3(stairRayStartPosition.x, stairRayStartPosition.y, 0);
                             Debug.DrawLine(debugLineStartStair, debugLineStartStair + new Vector3(1, 0, 0), Color.yellow);
 
-                            if (stairRaycast.collider != null)
-                            {
-                                float stairDistance = stairRaycast.point.x - (stairRayStartPosition.x + nextA.x);
-
-                                if (stairRaycast.point.x < stairRayStartPosition.x + nextA.x)
-                                    break;
-
-                            }
+                            if (stairRaycast.collider == null)
+                                break;
 
                             _momentum.x = 0;
                             resultMovement.x = 0;

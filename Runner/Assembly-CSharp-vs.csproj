@@ -59,6 +59,10 @@
      <Compile Include="Assets\Scripts\PlayerPhysics_Raycast.cs" />
      <Compile Include="Assets\Scripts\PlayerPhysics_Tutorial.cs" />
      <Compile Include="Assets\Scripts\Teset.cs" />
+     <Compile Include="Assets\Scripts\Weapon\Bulet\BaseBulet.cs" />
+     <Compile Include="Assets\Scripts\Weapon\Bulet\SimpleBulet.cs" />
+     <Compile Include="Assets\Scripts\Weapon\Pistol.cs" />
+     <Compile Include="Assets\Scripts\Weapon\Weapon.cs" />
  <Reference Include="UnityEngine.UI">
  <HintPath>D:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>
