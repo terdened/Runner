@@ -48,19 +48,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\ArcadePhysycs\BasePhysics.cs" />
-    <Compile Include="Assets\Scripts\ArcadePhysycs\PlayerPhysycs_Arcade.cs" />
+    <Compile Include="Assets\Scripts\ArcadePhysycs\BasePhysics_Player.cs" />
+    <Compile Include="Assets\Scripts\ArcadePhysycs\EnemyPhysics.cs" />
+    <Compile Include="Assets\Scripts\ArcadePhysycs\PlayerPhysics.cs" />
     <Compile Include="Assets\Scripts\Camera.cs" />
     <Compile Include="Assets\Scripts\Camera_Perspective.cs" />
     <Compile Include="Assets\Scripts\Effects\Splash.cs" />
     <Compile Include="Assets\Scripts\FloorDetector.cs" />
     <Compile Include="Assets\Scripts\PersonsControllers\BlockController.cs" />
     <Compile Include="Assets\Scripts\PersonsControllers\PlayerController.cs" />
+    <Compile Include="Assets\Scripts\PersonsControllers\SimpleEnemyController.cs" />
     <Compile Include="Assets\Scripts\Player.cs" />
-    <Compile Include="Assets\Scripts\PlayerControllerRayCast.cs" />
-    <Compile Include="Assets\Scripts\PlayerPhysics.cs" />
-    <Compile Include="Assets\Scripts\PlayerPhysics_Raycast.cs" />
-    <Compile Include="Assets\Scripts\PlayerPhysics_Tutorial.cs" />
-    <Compile Include="Assets\Scripts\Teset.cs" />
     <Compile Include="Assets\Scripts\Weapon\Bulet\BaseBulet.cs" />
     <Compile Include="Assets\Scripts\Weapon\Bulet\SimpleBulet.cs" />
     <Compile Include="Assets\Scripts\Weapon\Pistol.cs" />
@@ -78,7 +76,6 @@
       <HintPath>D:/Program Files/Unity/Editor/Data/PlaybackEngines/iOSSupport/UnityEditor.iOS.Extensions.Xcode.dll</HintPath>
     </Reference>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
 	   Other similar extension points exist, see Microsoft.Common.targets.

@@ -3,7 +3,6 @@ using System.Collections;
 
 public class SimpleBulet : BaseBulet 
 {
-    private Vector3 _direction;
     
     protected void Start()
     {
@@ -22,5 +21,26 @@ public class SimpleBulet : BaseBulet
         var splashEffect = Instantiate(Splash, transform.position, Quaternion.identity);
 
         DestroyObject(gameObject);       
+    }
+
+    override protected void CheckCollision()
+    {
+        var startPosition = new Vector2(transform.position.x, transform.position.y);
+        var direction = new Vector2(_direction.x, _direction.y);
+        var raycast = Physics2D.Raycast(startPosition,
+                                        direction,
+                                        Vector3.Distance(Vector3.zero, _direction),
+                                        LayerMask.GetMask("Floor", "Enemy"));
+
+        Debug.DrawLine(transform.position, transform.position + _direction, Color.blue);
+
+        if (raycast.collider != null)
+        {
+            if (raycast.collider.tag != "Player")
+            {
+                transform.position.Set(raycast.point.x, raycast.point.y, 0);
+                OnCollide(raycast.collider);
+            }
+        }
     }
 }

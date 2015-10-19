@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-[RequireComponent(typeof(BasePhysics))]
+[RequireComponent(typeof(PlayerPhysics))]
 public class PlayerController : MonoBehaviour {
 
     #region public params
@@ -10,13 +10,13 @@ public class PlayerController : MonoBehaviour {
     #endregion
 
     // Components
-    private BasePhysics playerPhysics;
+    private PlayerPhysics playerPhysics;
 	private Animator animator;
     private GameObject playerCamera;
 	
 	
 	void Start () {
-		playerPhysics = GetComponent<BasePhysics>();
+		playerPhysics = GetComponent<PlayerPhysics>();
 		animator = GetComponent<Animator>();
 		playerCamera = GameObject.FindGameObjectsWithTag("MainCamera")[0];
         playerPhysics.SetVelocity(Velocity);
