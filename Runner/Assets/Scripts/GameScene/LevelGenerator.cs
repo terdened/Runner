@@ -5,6 +5,7 @@ class LevelGenerator : MonoBehaviour
     public GameObject[] Template;
     private PlayerController _Player;
     public GameObject LastTemplate;
+    public GameObject ObsoleteTemplate;
     public bool WithWhole = true;
 
     void Start()
@@ -21,6 +22,10 @@ class LevelGenerator : MonoBehaviour
             if (WithWhole)
                 distance = 49;
 
+            if (ObsoleteTemplate != null)
+                DestroyObject(ObsoleteTemplate);
+
+            ObsoleteTemplate = LastTemplate;
             LastTemplate = (GameObject)Instantiate(Template[0], Vector3.right * (LastTemplate.transform.position.x + distance), Quaternion.identity);
         }
     }

@@ -13,6 +13,7 @@ public class PlayerController : MonoBehaviour {
     private PlayerPhysics playerPhysics;
 	private Animator animator;
     private GameObject playerCamera;
+    private float jetpackCharge = 0;
 	
 	
 	void Start () {
@@ -23,8 +24,18 @@ public class PlayerController : MonoBehaviour {
     }
 	
 	void Update () {
+        if (Input.GetKeyDown(KeyCode.Keypad7))
+            jetpackCharge = 100f;
+
         if (playerPhysics.OnGround && Input.GetButtonDown("Jump"))
             playerPhysics.AddForce(JumpDirection);
+        else if (Input.GetButton("Jump") && jetpackCharge > 0)
+        {
+            jetpackCharge -= 0.1f;
+            playerPhysics.AddForce(Vector2.up * 0.006f);
+            Debug.Log(jetpackCharge);
+        }
+            
 
         if (playerPhysics.OnGround)
             playerPhysics.SetVelocity(Velocity);
