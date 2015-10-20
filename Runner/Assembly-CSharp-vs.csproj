@@ -50,6 +50,7 @@
     <Compile Include="Assets\Scripts\ArcadePhysycs\BasePhysics.cs" />
     <Compile Include="Assets\Scripts\ArcadePhysycs\BasePhysics_Player.cs" />
     <Compile Include="Assets\Scripts\ArcadePhysycs\EnemyPhysics.cs" />
+    <Compile Include="Assets\Scripts\ArcadePhysycs\NewColliderLogicPhysics.cs" />
     <Compile Include="Assets\Scripts\ArcadePhysycs\PlayerPhysics.cs" />
     <Compile Include="Assets\Scripts\Camera.cs" />
     <Compile Include="Assets\Scripts\Camera_Perspective.cs" />

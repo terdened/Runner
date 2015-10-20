@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public abstract class BasePhysics : MonoBehaviour {
 
@@ -50,7 +51,189 @@ public abstract class BasePhysics : MonoBehaviour {
         transform.Translate(_momentum.x, _momentum.y, 0);
     }
 
-    protected abstract Vector2 UpdateRaycasts(Vector2 resultMovement);   
+    private Vector2 UpdateRaycasts(Vector2 resultMovement)
+    {
+        var nextA = _momentum + resultMovement;
+        var wasOnGround = OnGround;
+        OnGround = false;
+        _resistance = new Vector2(AirResistance, AirResistance);
+
+        var hitedVerticalRaycasts = new List<RaycastHit2D>();
+        var unhitedVerticalRaycasts = new List<RaycastHit2D>();
+
+        for (int i = 0; i < _verticalRasycastCount; i++)
+        {
+            var rayStartPosition = new Vector2(0, 0);
+            rayStartPosition.x = transform.position.x - _size.x / 2 + i * MinRaycastDistance;
+            rayStartPosition.y = transform.position.y + (_size.y / 2) * Mathf.Sign(nextA.y);
+
+            var raycast = Physics2D.Raycast(rayStartPosition,
+                                                    new Vector2(0, Mathf.Sign(nextA.y)),
+                                                    2f,
+                                                    LayerMask.GetMask("Floor"));
+
+            if (raycast.collider != null && raycast.point.y != 0.0f &&
+                ((nextA.y < 0) && (raycast.point.y > rayStartPosition.y + nextA.y)) || 
+                ((nextA.y > 0) && (raycast.point.y < rayStartPosition.y + nextA.y)))
+            {
+                if (nextA.y < 0 || raycast.point.y != 0.0f)
+                    hitedVerticalRaycasts.Add(raycast);
+                else
+                    unhitedVerticalRaycasts.Add(raycast);
+            }                
+            else if (raycast.collider != null)
+                unhitedVerticalRaycasts.Add(raycast);
+
+            var debugLineStart = new Vector3(rayStartPosition.x, rayStartPosition.y, 0);
+            Debug.DrawLine(debugLineStart, debugLineStart + new Vector3(0, Mathf.Sign(nextA.y) * 2, 0), Color.green);
+        }
+
+        if (nextA.y > 0 && hitedVerticalRaycasts.Count > 0)
+            Debug.Log(hitedVerticalRaycasts[0].point.y);
+
+        OnGround = false;
+
+        if (nextA.y < 0 && hitedVerticalRaycasts.Count > 0)
+        {
+
+            RaycastHit2D theNearestToFloor = hitedVerticalRaycasts[0];
+            float highestPoint = theNearestToFloor.point.y;
+
+            foreach (var raycast in hitedVerticalRaycasts)
+            {
+                if (highestPoint < raycast.point.y)
+                {
+                    highestPoint = raycast.point.y;
+                    theNearestToFloor = raycast;
+                }
+            }
+
+            var deepRayStartPosition = new Vector2(0, 0);
+            deepRayStartPosition.x = theNearestToFloor.point.x;
+            deepRayStartPosition.y = transform.position.y + _size.y / 2;
+
+            var deepRaycast = Physics2D.Raycast(deepRayStartPosition,
+                                            new Vector2(0, -_size.y + 0.1f),
+                                            10f,
+                                            LayerMask.GetMask("Floor"));
+
+            var debugDeepLineStart = new Vector3(deepRayStartPosition.x, deepRayStartPosition.y, 0);
+            Debug.DrawLine(debugDeepLineStart, debugDeepLineStart + new Vector3(0, -_size.y + 0.1f, 0), Color.cyan);
+
+            if (deepRaycast.collider != null)
+            {
+                transform.position = new Vector3(transform.position.x, deepRaycast.point.y + _size.y / 2, transform.position.z);
+            }
+
+            _momentum.y = 0;
+            OnGround = true;
+            resultMovement.y = 0;
+            _resistance.x = FloorResistance;
+        }
+        else if (nextA.y < 0 && hitedVerticalRaycasts.Count == 0 && wasOnGround && unhitedVerticalRaycasts.Count > 0)
+        {
+            RaycastHit2D theNearestToFloor = unhitedVerticalRaycasts[0];
+            float highestPoint = theNearestToFloor.point.y;
+
+            foreach (var raycast in unhitedVerticalRaycasts)
+            {
+                if (highestPoint < raycast.point.y)
+                {
+                    highestPoint = raycast.point.y;
+                    theNearestToFloor = raycast;
+                }
+            }
+
+            if (highestPoint > transform.position.y + nextA.y - 1)
+            {
+                transform.position = new Vector3(transform.position.x, theNearestToFloor.point.y + _size.y / 2, transform.position.z);
+
+                _momentum.y = 0;
+                OnGround = true;
+                resultMovement.y = 0;
+                _resistance.x = FloorResistance;
+
+            }
+        }
+        else if (nextA.y > 0 && hitedVerticalRaycasts.Count > 0)
+        {
+            _momentum.y = 0;
+            OnGround = true;
+            resultMovement.y = 0;
+        }
+
+
+        #region right
+        if (nextA.x > 0)
+        {
+            for (int i = 1; i < _horizontalRasycastCount; i++)
+            {
+                var rayStartPosition = new Vector2(0, 0);
+                rayStartPosition.x = transform.position.x + _size.x / 2;
+                rayStartPosition.y = transform.position.y - _size.y / 2 + i * MinRaycastDistance + 0.001f;
+
+                var raycast = Physics2D.Raycast(rayStartPosition,
+                                                new Vector2(1, 0),
+                                                10f,
+                                                LayerMask.GetMask("Floor"));
+
+                var debugLineStart = new Vector3(rayStartPosition.x, rayStartPosition.y, 0);
+                Debug.DrawLine(debugLineStart, debugLineStart + new Vector3(1, 0, 0), Color.blue);
+
+                if (raycast.collider != null)
+                {
+                    float distance = raycast.point.x - (rayStartPosition.x + nextA.x); //TODO: Extra param
+                    if (raycast.point.x < rayStartPosition.x + nextA.x)
+                    {
+                        //transform.position = new Vector3(raycast.point.x + _size.x / 2, transform.position.y, transform.position.z);
+                        
+                        _momentum.x = 0;
+                        resultMovement.x = 0;
+
+                        break;
+
+                    }
+                }
+            }
+        }
+        #endregion
+
+        #region left
+        if (nextA.x < 0)
+        {
+            for (int i = 1; i < _horizontalRasycastCount; i++)
+            {
+                var rayStartPosition = new Vector2(0, 0);
+                rayStartPosition.x = transform.position.x - _size.x / 2;
+                rayStartPosition.y = transform.position.y - _size.y / 2 + i * MinRaycastDistance + 0.001f;
+
+                var raycast = Physics2D.Raycast(rayStartPosition,
+                                                new Vector2(-1, 0),
+                                                10f,
+                                                LayerMask.GetMask("Floor"));
+
+                var debugLineStart = new Vector3(rayStartPosition.x, rayStartPosition.y, 0);
+                Debug.DrawLine(debugLineStart, debugLineStart + new Vector3(-1, 0, 0), Color.blue);
+
+                if (raycast.collider != null)
+                {
+                    float distance = raycast.point.x - (rayStartPosition.x - nextA.x);
+                    if (raycast.point.x > rayStartPosition.x + nextA.x)
+                    {
+                        //transform.position = new Vector3(raycast.point.x + _size.x / 2, transform.position.y, transform.position.z);
+                        
+                        _momentum.x = 0;
+                        resultMovement.x = 0;
+
+                        break;
+                    }
+                }
+            }
+        }
+        #endregion
+
+        return resultMovement;
+    }
 
     private Vector2 HandleGravity(Vector2 resultMovement)
     {
