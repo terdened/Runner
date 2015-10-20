@@ -26,6 +26,11 @@ public class PlayerController : MonoBehaviour {
         if (playerPhysics.OnGround && Input.GetButtonDown("Jump"))
             playerPhysics.AddForce(JumpDirection);
 
+        if (playerPhysics.OnGround)
+            playerPhysics.SetVelocity(Velocity);
+        else
+            playerPhysics.SetVelocity(Vector2.zero);
+
         UpdateAnimation();
         UpdateCamera();
     }

@@ -18,11 +18,12 @@ public abstract class BasePhysics : MonoBehaviour {
     protected Vector2 _momentum = new Vector2(0, 0);
     protected Vector2 _velocity = new Vector2(0, 0);
     protected float _stairHeight = 0.2f;
-    protected float _aVelocity = 0.001f;
+    protected float _aVelocity = 0.002f;
     protected Vector2 _resistance;
     protected Vector2 _size;
     protected int _horizontalRasycastCount;
     protected int _verticalRasycastCount;
+    public bool _forceVelocity = false;
     #endregion
 
     void Start()
@@ -33,9 +34,9 @@ public abstract class BasePhysics : MonoBehaviour {
     }
 
     // Update is called once per frame
-    void Update()
+    protected virtual void Update()
     {
-
+        _forceVelocity = false;
         Vector2 aIncrease = new Vector2(0, 0);
 
         aIncrease = HandleGravity(aIncrease);
@@ -310,7 +311,8 @@ public abstract class BasePhysics : MonoBehaviour {
 
     public void SetVelocity(Vector2 velocity)
     {
-        _velocity = velocity;
+        if(!_forceVelocity)
+            _velocity = velocity;
     }
 
     public Vector2 GetMomentum()

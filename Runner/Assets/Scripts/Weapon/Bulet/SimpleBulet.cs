@@ -38,7 +38,7 @@ public class SimpleBulet : BaseBulet
         {
             if (raycast.collider.tag != "Player")
             {
-                transform.position.Set(raycast.point.x, raycast.point.y, 0);
+                transform.position = new Vector3(raycast.point.x, raycast.point.y, 0);
                 OnCollide(raycast.collider);
             }
         }
