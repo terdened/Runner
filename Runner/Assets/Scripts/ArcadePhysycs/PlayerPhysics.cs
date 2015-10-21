@@ -28,14 +28,14 @@ class PlayerPhysics : BasePhysics
 
             if (raycast.collider != null && raycast.collider.gameObject.tag == "Marine Enemy")
             {
-                var enemyPhysics = raycast.collider.gameObject.GetComponent<MarineEnemy>();
-                this._velocity = enemyPhysics.Velocity;
-                this._momentum.x = Mathf.MoveTowards(_momentum.x, enemyPhysics.GetMomenut().x, 0.001f);
+                var enemyController = raycast.collider.gameObject.GetComponent<EnemyPersonController>();
+                this._velocity = enemyController.Velocity;
+                this._momentum.x = Mathf.MoveTowards(_momentum.x, enemyController.Momentum.x, 0.001f);
 
                 if(raycast.point.x - rayStartPosition.x < 1.9f)
-                    this._momentum.x = Mathf.MoveTowards(_momentum.x, enemyPhysics.GetMomenut().x/1.5f, 0.005f);
+                    this._momentum.x = Mathf.MoveTowards(_momentum.x, enemyController.Momentum.x/1.5f, 0.005f);
                 else
-                    this._momentum.x = Mathf.MoveTowards(_momentum.x, enemyPhysics.GetMomenut().x, 0.001f);
+                    this._momentum.x = Mathf.MoveTowards(_momentum.x, enemyController.Momentum.x, 0.001f);
 
                 this._forceVelocity = true;
             }

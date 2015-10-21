@@ -3,14 +3,14 @@
 class LevelGenerator : MonoBehaviour
 {
     public GameObject[] Template;
-    private PlayerController _Player;
+    private PlayerPersonController _Player;
     public GameObject LastTemplate;
     public GameObject ObsoleteTemplate;
     public bool WithWhole = true;
 
     void Start()
     {
-        _Player = transform.GetComponentInChildren<PlayerController>();
+        _Player = transform.GetComponentInChildren<PlayerPersonController>();
     }
 
     void Update()

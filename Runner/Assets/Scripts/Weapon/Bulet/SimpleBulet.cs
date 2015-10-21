@@ -25,7 +25,7 @@ public class SimpleBulet : BaseBulet
             var enemyPhysics = other.gameObject.GetComponent<EnemyPhysics>();
             enemyPhysics.AddForce(Vector2.right * 0.03f + Vector2.up * 0.03f);
 
-            var enemyController = other.GetComponent<MarineEnemy>();
+            var enemyController = other.GetComponent<EnemyPersonController>();
             enemyController.GetDamage(Damage);
         }
 
