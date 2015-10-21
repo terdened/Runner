@@ -1,5 +1,5 @@
 ﻿
-class EnemyType1PersonModel : BasePersonModel
+class EnemyType1PersonModel : EnemyPersonModel
 {
 
 }

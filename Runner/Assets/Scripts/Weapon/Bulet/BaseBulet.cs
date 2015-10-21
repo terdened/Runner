@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public abstract class BaseBulet : MonoBehaviour {
 
@@ -12,6 +13,7 @@ public abstract class BaseBulet : MonoBehaviour {
     private Vector3 _startPosition;
     protected Vector3 _direction;
     private int _collisionCount = 0;
+    protected List<string> _activeLayers = new List<string>();
 
     protected void Start()
     {
@@ -24,6 +26,16 @@ public abstract class BaseBulet : MonoBehaviour {
             Destroy(gameObject);
 
         CheckCollision();
+    }
+
+    protected void InitLayers(bool isPlayer)
+    {
+        _activeLayers.Add("Floor");
+        if (isPlayer)
+            _activeLayers.Add("Enemy");
+        else
+            _activeLayers.Add("Player");
+            
     }
 
     protected abstract void OnCollide(Collider2D other);

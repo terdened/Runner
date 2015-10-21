@@ -58,12 +58,15 @@
      <Compile Include="Assets\Scripts\GameScene\EnemyGenerator.cs" />
      <Compile Include="Assets\Scripts\GameScene\LevelGenerator.cs" />
      <Compile Include="Assets\Scripts\Models\PersonModels\BasePersonModel.cs" />
+     <Compile Include="Assets\Scripts\Models\PersonModels\EnemyPersonModel.cs" />
      <Compile Include="Assets\Scripts\Models\PersonModels\EnemyType1PersonModel.cs" />
+     <Compile Include="Assets\Scripts\Models\PersonModels\EnemyType2PersonModel.cs" />
      <Compile Include="Assets\Scripts\Models\PersonModels\PlayerPersonModel.cs" />
      <Compile Include="Assets\Scripts\PersonsControllers\BasePersonController.cs" />
      <Compile Include="Assets\Scripts\PersonsControllers\BlockController.cs" />
      <Compile Include="Assets\Scripts\PersonsControllers\EnemyPersonController.cs" />
      <Compile Include="Assets\Scripts\PersonsControllers\EnemyType1PersonController.cs" />
+     <Compile Include="Assets\Scripts\PersonsControllers\EnemyType2PersonController.cs" />
      <Compile Include="Assets\Scripts\PersonsControllers\MarineEnemy.cs" />
      <Compile Include="Assets\Scripts\PersonsControllers\PlayerController.cs" />
      <Compile Include="Assets\Scripts\PersonsControllers\PlayerPersonController.cs" />
@@ -71,6 +74,7 @@
      <Compile Include="Assets\Scripts\Player.cs" />
      <Compile Include="Assets\Scripts\Weapon\Bulet\BaseBulet.cs" />
      <Compile Include="Assets\Scripts\Weapon\Bulet\SimpleBulet.cs" />
+     <Compile Include="Assets\Scripts\Weapon\EnemyPistol.cs" />
      <Compile Include="Assets\Scripts\Weapon\Pistol.cs" />
      <Compile Include="Assets\Scripts\Weapon\Weapon.cs" />
  <Reference Include="UnityEngine.UI">

@@ -24,7 +24,12 @@ abstract class BasePersonController : MonoBehaviour
         PersonModel.HealthPower -= damage;
 
         if (PersonModel.HealthPower <= 0)
+        {
+            if (gameObject.tag == "Player")
+                Application.LoadLevel("perspective");
+
             DestroyObject(gameObject);
+        }
     }
 }
 

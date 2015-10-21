@@ -8,20 +8,14 @@ public abstract class Weapon : MonoBehaviour {
     public GameObject Bulet;
     #endregion
 
-    private int _counter = 0;
+    protected int _counter = 0;
 
-    void Update()
+    protected void Update()
     {
         UpdateCounter();
-
-        if (Input.GetButtonDown("Fire1") && CanFire())
-        {
-            Fire();
-            _counter = 0;
-        }
     }
 
-    protected abstract void Fire();
+    public abstract void Fire();
 
     protected bool CanFire()
     {

@@ -3,9 +3,13 @@ using System.Collections;
 
 public class SimpleBulet : BaseBulet 
 {
+    public bool IsPlayer = false;
+
     protected void Start()
     {
         base.Start();
+
+        InitLayers(IsPlayer);
         _direction = new Vector3(InitDirection.x, InitDirection.y, 0);
         this.Damage = 15f;
     }
@@ -24,10 +28,19 @@ public class SimpleBulet : BaseBulet
         {
             var enemyPhysics = other.gameObject.GetComponent<EnemyPhysics>();
             enemyPhysics.AddForce(Vector2.right * 0.03f + Vector2.up * 0.03f);
-
-            var enemyController = other.GetComponent<EnemyPersonController>();
-            enemyController.GetDamage(Damage);
         }
+
+        if(other.tag == "Player")
+        {
+            var playerPhysics = other.gameObject.GetComponent<PlayerPhysics>();
+            playerPhysics.AddForce(Vector2.left * 0.03f + Vector2.up * 0.03f);
+        }
+
+
+        var personController = other.GetComponent<BasePersonController>();
+
+        if (personController != null)
+            personController.GetDamage(Damage);
 
         DestroyObject(gameObject);       
     }
@@ -39,7 +52,7 @@ public class SimpleBulet : BaseBulet
         var raycast = Physics2D.Raycast(startPosition,
                                         direction,
                                         Vector3.Distance(Vector3.zero, _direction),
-                                        LayerMask.GetMask("Floor", "Enemy"));
+                                        LayerMask.GetMask(_activeLayers.ToArray()));
 
         Debug.DrawLine(transform.position, transform.position + _direction, Color.blue);
 
