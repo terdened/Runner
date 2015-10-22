@@ -48,6 +48,7 @@
   <ItemGroup>
      <Compile Include="Assets\Scripts\ArcadePhysycs\BasePhysics.cs" />
      <Compile Include="Assets\Scripts\ArcadePhysycs\BasePhysics_Player.cs" />
+     <Compile Include="Assets\Scripts\ArcadePhysycs\BuletPhysics.cs" />
      <Compile Include="Assets\Scripts\ArcadePhysycs\EnemyPhysics.cs" />
      <Compile Include="Assets\Scripts\ArcadePhysycs\NewColliderLogicPhysics.cs" />
      <Compile Include="Assets\Scripts\ArcadePhysycs\PlayerPhysics.cs" />
@@ -73,6 +74,7 @@
      <Compile Include="Assets\Scripts\PersonsControllers\SimpleEnemyController.cs" />
      <Compile Include="Assets\Scripts\Player.cs" />
      <Compile Include="Assets\Scripts\Weapon\Bulet\BaseBulet.cs" />
+     <Compile Include="Assets\Scripts\Weapon\Bulet\HeavyBulet.cs" />
      <Compile Include="Assets\Scripts\Weapon\Bulet\SimpleBulet.cs" />
      <Compile Include="Assets\Scripts\Weapon\EnemyPistol.cs" />
      <Compile Include="Assets\Scripts\Weapon\Pistol.cs" />

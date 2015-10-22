@@ -11,7 +11,6 @@ public class SimpleBulet : BaseBulet
 
         InitLayers(IsPlayer);
         _direction = new Vector3(InitDirection.x, InitDirection.y, 0);
-        this.Damage = 15f;
     }
 
     protected void Update()

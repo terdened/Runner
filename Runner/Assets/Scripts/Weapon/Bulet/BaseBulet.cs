@@ -28,13 +28,22 @@ public abstract class BaseBulet : MonoBehaviour {
         CheckCollision();
     }
 
-    protected void InitLayers(bool isPlayer)
+    protected void InitLayers(bool isPlayer, bool friendlyFire = false)
     {
         _activeLayers.Add("Floor");
-        if (isPlayer)
+
+        if (friendlyFire)
+        {
             _activeLayers.Add("Enemy");
-        else
             _activeLayers.Add("Player");
+        }
+        else
+        {
+            if (isPlayer)
+                _activeLayers.Add("Enemy");
+            else
+                _activeLayers.Add("Player");
+        }
             
     }
 

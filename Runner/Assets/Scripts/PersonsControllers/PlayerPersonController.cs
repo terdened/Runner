@@ -3,10 +3,15 @@
 class PlayerPersonController : BasePersonController
 {
     protected GameObject PlayerCamera;
+    private int _currentWeapon = 0;
+    private GameObject _lastWeapon;
+
+    public GameObject[] Weapons;
 
     protected new void Start()
     {
         base.Start();
+        InitWeapon();
         PlayerCamera = GameObject.FindGameObjectsWithTag("MainCamera")[0];
     }
 
@@ -31,6 +36,7 @@ class PlayerPersonController : BasePersonController
 
         UpdateAnimation();
         UpdateCamera();
+        HandleChangeWeapon();
     }
 
     override protected void UpdateAnimation()
@@ -46,6 +52,39 @@ class PlayerPersonController : BasePersonController
 
         if (!PersonPhysics.OnGround && PersonPhysics.GetMomentum().y < 0)
             PersonAnimator.SetInteger("State", 3);
+    }
+
+    private void HandleChangeWeapon()
+    {
+        if(Input.GetKeyDown(KeyCode.DownArrow))
+        {
+            _currentWeapon--;
+            if (_currentWeapon < 0)
+                _currentWeapon = Weapons.Length - 1;
+
+            InitWeapon();
+        }
+
+        if (Input.GetKeyDown(KeyCode.UpArrow))
+        {
+            _currentWeapon++;
+            if (_currentWeapon >= Weapons.Length - 1)
+                _currentWeapon = 0;
+
+            InitWeapon();
+        }
+    }
+
+    private void InitWeapon()
+    {
+        if (_lastWeapon != null)
+            DestroyObject(_lastWeapon);
+
+        var newWeapon = (GameObject)Instantiate(Weapons[_currentWeapon]);
+        newWeapon.transform.SetParent(transform);
+        newWeapon.transform.localPosition = Vector3.zero;
+
+        _lastWeapon = newWeapon;
     }
 
     public void UpdateCamera()
