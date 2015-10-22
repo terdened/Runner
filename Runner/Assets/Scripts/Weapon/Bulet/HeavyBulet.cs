@@ -7,6 +7,8 @@ public class HeavyBulet : BaseBulet
 {
     public bool IsPlayer = false;
     public Vector2 InitForce = new Vector2(0, 0);
+    public float SplashDistance = 1f;
+    public float SplashPower = 0.1f;
 
     private BuletPhysics _buletPhysics;
 
@@ -30,31 +32,46 @@ public class HeavyBulet : BaseBulet
     {
         var splashEffect = Instantiate(Splash, transform.position, Quaternion.identity);
 
-        if(other == null)
+        var physicObjects = (BasePhysics[]) FindObjectsOfType(typeof(BasePhysics));
+        var buletPosition = new Vector2(transform.position.x, transform.position.y);
+
+        foreach (var physicObject in physicObjects)
         {
-            DestroyObject(gameObject);
-            return;
+            var objectPosition = new Vector2(physicObject.transform.position.x, physicObject.transform.position.y);
+
+            Debug.Log(objectPosition.x);
+
+            var distance = Vector2.Distance(objectPosition, buletPosition);
+
+
+            Debug.Log(objectPosition.x);
+
+            if (distance != 0 && distance < SplashDistance)
+            {
+                var forceDirection = new Vector2(objectPosition.x - buletPosition.x, objectPosition.y - buletPosition.y);
+
+                if (Mathf.Abs(forceDirection.x) > Mathf.Abs(forceDirection.y))
+                {
+                    forceDirection.y = forceDirection.y / Mathf.Abs(forceDirection.x);
+                    forceDirection.x = forceDirection.x / Mathf.Abs(forceDirection.x);
+                }
+                else
+                {
+                    forceDirection.x = forceDirection.x / Mathf.Abs(forceDirection.y);
+                    forceDirection.y = forceDirection.y / Mathf.Abs(forceDirection.y);
+                }
+
+                var distanceK = (1 - (distance / SplashDistance));
+
+                physicObject.AddForce(forceDirection * SplashPower * distanceK);
+                var personController = physicObject.transform.GetComponent<BasePersonController>();
+
+                if (personController != null)
+                    personController.GetDamage(Damage * distanceK);
+            }
         }
 
-        if (other.tag == "Marine Enemy")
-        {
-            var enemyPhysics = other.gameObject.GetComponent<EnemyPhysics>();
-            enemyPhysics.AddForce(Vector2.right * 0.03f + Vector2.up * 0.03f);
-        }
-
-        if (other.tag == "Player")
-        {
-            var playerPhysics = other.gameObject.GetComponent<PlayerPhysics>();
-            playerPhysics.AddForce(Vector2.left * 0.03f + Vector2.up * 0.03f);
-        }
-
-
-        var personController = other.GetComponent<BasePersonController>();
-
-        if (personController != null)
-            personController.GetDamage(Damage);
-        
-        DestroyObject(gameObject);       
+        DestroyObject(gameObject);
     }
 
     override protected void CheckCollision()
