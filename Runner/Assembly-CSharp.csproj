@@ -54,6 +54,7 @@
      <Compile Include="Assets\Scripts\ArcadePhysycs\PlayerPhysics.cs" />
      <Compile Include="Assets\Scripts\Camera.cs" />
      <Compile Include="Assets\Scripts\Camera_Perspective.cs" />
+     <Compile Include="Assets\Scripts\Effects\DeleteEffect.cs" />
      <Compile Include="Assets\Scripts\Effects\Splash.cs" />
      <Compile Include="Assets\Scripts\FloorDetector.cs" />
      <Compile Include="Assets\Scripts\GameScene\EnemyGenerator.cs" />

@@ -10,6 +10,11 @@ public abstract class Weapon : MonoBehaviour {
 
     protected int _counter = 0;
 
+    protected void Start()
+    {
+        _counter = FireRate;
+    }
+
     protected void Update()
     {
         UpdateCounter();
