@@ -8,7 +8,7 @@ public class HeavyBulet : BaseBulet
     public bool IsPlayer = false;
     public Vector2 InitForce = new Vector2(0, 0);
     public float SplashDistance = 1f;
-    public float SplashPower = 0.1f;
+    public Vector2 SplashPower = new Vector2(0.1f, 0.3f);
 
     private BuletPhysics _buletPhysics;
 
@@ -38,32 +38,15 @@ public class HeavyBulet : BaseBulet
         foreach (var physicObject in physicObjects)
         {
             var objectPosition = new Vector2(physicObject.transform.position.x, physicObject.transform.position.y);
-
-            Debug.Log(objectPosition.x);
-
+            
             var distance = Vector2.Distance(objectPosition, buletPosition);
-
-
-            Debug.Log(objectPosition.x);
-
+            
             if (distance != 0 && distance < SplashDistance)
             {
-                var forceDirection = new Vector2(objectPosition.x - buletPosition.x, objectPosition.y - buletPosition.y);
-
-                if (Mathf.Abs(forceDirection.x) > Mathf.Abs(forceDirection.y))
-                {
-                    forceDirection.y = forceDirection.y / Mathf.Abs(forceDirection.x);
-                    forceDirection.x = forceDirection.x / Mathf.Abs(forceDirection.x);
-                }
-                else
-                {
-                    forceDirection.x = forceDirection.x / Mathf.Abs(forceDirection.y);
-                    forceDirection.y = forceDirection.y / Mathf.Abs(forceDirection.y);
-                }
-
+                
                 var distanceK = (1 - (distance / SplashDistance));
 
-                physicObject.AddForce(forceDirection * SplashPower * distanceK);
+                physicObject.AddForce(new Vector2(Mathf.Sign(objectPosition.x - buletPosition.x) * SplashPower.x, SplashPower.y) * distanceK);
                 var personController = physicObject.transform.GetComponent<BasePersonController>();
 
                 if (personController != null)
@@ -87,7 +70,6 @@ public class HeavyBulet : BaseBulet
 
         if (raycast.collider != null)
         {
-            transform.position = new Vector3(raycast.point.x + 0.5f, raycast.point.y, 0);
             OnCollide(raycast.collider);
         }
 
