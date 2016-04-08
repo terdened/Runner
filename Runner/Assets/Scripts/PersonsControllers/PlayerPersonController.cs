@@ -29,23 +29,36 @@ class PlayerPersonController : BasePersonController
             Debug.Log(((PlayerPersonModel)PersonModel).JetpackCharge);
         }
 
-        if (PersonPhysics.OnGround)
-            PersonPhysics.SetVelocity(PersonModel.Velocity);
+        var leftAxisX = Input.GetAxis("LeftAxisX");
+        if (PersonPhysics.OnGround && leftAxisX < -0.9)
+            PersonPhysics.SetVelocity(Vector2.right * ((PlayerPersonModel)PersonModel).RunSpeed * leftAxisX);
+        else if (PersonPhysics.OnGround && leftAxisX > 0.9)
+            PersonPhysics.SetVelocity(Vector2.right * ((PlayerPersonModel)PersonModel).RunSpeed * leftAxisX);
         else
             PersonPhysics.SetVelocity(Vector2.zero);
+
+        Debug.Log(leftAxisX);
 
         UpdateAnimation();
         UpdateCamera();
         HandleChangeWeapon();
+        HandleDirection();
     }
 
     override protected void UpdateAnimation()
     {
-        if (PersonPhysics.OnGround && PersonPhysics.GetMomentum().x <= 0)
-            PersonAnimator.SetInteger("State", 0);
+        var leftAxisX = Input.GetAxis("LeftAxisX");
 
-        if (PersonPhysics.OnGround && PersonPhysics.GetMomentum().x > 0)
+        if(Mathf.Abs(leftAxisX) > 0.9 && PersonPhysics.OnGround)
             PersonAnimator.SetInteger("State", 1);
+        else
+            PersonAnimator.SetInteger("State", 0);
+        
+        //if (PersonPhysics.OnGround && PersonPhysics.GetMomentum().x <= 0)
+        //    PersonAnimator.SetInteger("State", 0);
+
+        //if (PersonPhysics.OnGround && PersonPhysics.GetMomentum().x > 0)
+        //    PersonAnimator.SetInteger("State", 1);
 
         if (!PersonPhysics.OnGround && PersonPhysics.GetMomentum().y > 0)
             PersonAnimator.SetInteger("State", 2);
@@ -85,6 +98,18 @@ class PlayerPersonController : BasePersonController
         newWeapon.transform.localPosition = Vector3.zero;
 
         _lastWeapon = newWeapon;
+    }
+
+    private void HandleDirection()
+    {
+        var leftAxisX = Input.GetAxis("LeftAxisX");
+        var spriteRenderer = (SpriteRenderer)this.GetComponent<SpriteRenderer>();
+
+        if (leftAxisX < -0.9)
+            spriteRenderer.flipX = true;
+
+        if (leftAxisX > 0.9)
+            spriteRenderer.flipX = false;
     }
 
     public void UpdateCamera()
